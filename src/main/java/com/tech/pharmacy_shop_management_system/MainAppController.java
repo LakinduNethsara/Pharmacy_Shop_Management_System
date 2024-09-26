@@ -7,7 +7,7 @@ import Purchase.Purchase;
 import RemortCustomer.RemoteCustomerOrderMedicineDetails;
 
 import Connection.DatabaseConnection;
-import RemortCustomer.RemoteCustomerOrderMedicineDetails;< Lakindu-3
+import RemortCustomer.RemoteCustomerOrderMedicineDetails;
 import SalesTransaction.MedicineData;
 import SalesTransaction.Sales;
 import User.Admin;
@@ -42,7 +42,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-port java.sql.*;
+import java.sql.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -436,41 +436,179 @@ public class MainAppController implements Initializable {
 
 
     // This method can help to move through the windows
-          public void controlPanel(ActionEvent event){
-                 if(event.getSource() == emailPage){
-                    Email email = new  Email(webView);
-                    email.emailServer();
-                    emailPage.setVisible(false);
-                 }else if (event.getSource()== purchasebtn) {
+    public void controlPanel(ActionEvent event){
+        if(event.getSource() == emailPage){ // navigate into email page
+            RCOManagePanel.setVisible(false);
+            WEB_VIEW.setVisible(true);
+            RCOPaymentPanel.setVisible(false);
+            DCOBackground.setVisible(false);
+            UserManageBackground.setVisible(false);
+            Email email = new  Email(webView);
+            email.emailServer();
+        }else if (event.getSource() == RCO_BTN ) { // navigate into remote customer oder page
+            RCOManagePanel.setVisible(true);
+            WEB_VIEW.setVisible(false);
+            RCOPaymentPanel.setVisible(false);
 
-                     purchaseAp.setVisible(true);
-                     placePurchasetbl.setVisible(true);
-                     placePurchaseAP.setVisible(true);
-                     completePurchaseTbl.setVisible(false);
-                     completePurchaseAP.setVisible(false);
-
-
-                 }
-                 else if (event.getSource()== cpbtn) {
-
-                     //purchaseAp.setVisible(true);
-                     placePurchasetbl.setVisible(false);
-                     placePurchaseAP.setVisible(false);
-                     completePurchaseTbl.setVisible(true);
-                     completePurchaseAP.setVisible(true);
+            ShowData();
+            RCOrderID();
 
 
-                 }
-                 else if (event.getSource()== ppbtn) {
 
-                     //purchaseAp.setVisible(true);
-                     placePurchasetbl.setVisible(true);
-                     placePurchaseAP.setVisible(true);
-                     completePurchaseTbl.setVisible(false);
-                     completePurchaseAP.setVisible(false);
-                 }
+            DCOBackground.setVisible(false);
+            UserManageBackground.setVisible(false);
 
-          }    
+        }else if(event.getSource() ==RCOPaymentBtn){ // navigate into remote customer payment page
+            // System.out.println("hi");
+            RCOManagePanel.setVisible(false);
+            WEB_VIEW.setVisible(false);
+            RCOPaymentPanel.setVisible(true);
+
+            PM_PYAMENT_BTN.setDisable(true);
+            ShowPData();
+
+            DCOBackground.setVisible(false);
+            UserManageBackground.setVisible(false);
+        }else if(event.getSource()==DCOManageButton){ // navigate into Direct customer order page
+            getMedicine();    //Load stock medicine
+
+
+            DCOBackground.setVisible(true);
+            RCOPaymentPanel.setVisible(false);
+            RCOManagePanel.setVisible(false);
+            WEB_VIEW.setVisible(false);
+            UserManageBackground.setVisible(false);
+            DCOReadIDTextField.requestFocus();
+        }else if(event.getSource()==UserManageButton){ // navigate into User Manage page
+            getStaff();
+
+            DCOBackground.setVisible(false);
+            RCOPaymentPanel.setVisible(false);
+            RCOManagePanel.setVisible(false);
+            WEB_VIEW.setVisible(false);
+            UserManageBackground.setVisible(true);
+            StaffManageBackground.setVisible(true);
+            AdminManageBackground.setVisible(false);
+        }else if(event.getSource()==UserManageStaffButton){ // navigate into Staff Manage page
+            getStaff();
+
+            DCOBackground.setVisible(false);
+            RCOPaymentPanel.setVisible(false);
+            RCOManagePanel.setVisible(false);
+            WEB_VIEW.setVisible(false);
+            UserManageBackground.setVisible(true);
+            StaffManageBackground.setVisible(true);
+            AdminManageBackground.setVisible(false);
+        }else if(event.getSource()==UserManageAdminButton){ // navigate into Admin Manage page
+            getAdmin();
+
+            DCOBackground.setVisible(false);
+            RCOPaymentPanel.setVisible(false);
+            RCOManagePanel.setVisible(false);
+            WEB_VIEW.setVisible(false);
+            UserManageBackground.setVisible(true);
+            StaffManageBackground.setVisible(false);
+            AdminManageBackground.setVisible(true);
+
+        }else if(event.getSource()==DCOClearButton){ // Functionality to clear DCO
+            clearData();
+
+        }else if(event.getSource()==AdminManageAddButton){ // Functionality to Add ADMIN User
+            new Admin().addUser(AdminManageID.getText(),
+                    AdminManageName.getText(),
+                    AdminManageContactNo.getText(),
+                    AdminManagePassword.getText(),
+                    AdminManageSalary.getText(),
+                    AdminManageEmail.getText());
+            getAdmin();
+            clearUserData();
+
+        }else if(event.getSource()==StaffManageAddButton){ // Functionality to Add Staff User
+            new Staff().addUser(StaffManageID.getText(),
+                    StaffManageName.getText(),
+                    StaffManageContactNo.getText(),
+                    StaffManagePassword.getText(),
+                    StaffManageSalary.getText(),
+                    StaffManageEmail.getText(),
+                    StaffManagePosition.getText());
+            getStaff();
+            clearUserData();
+
+        }else if(event.getSource()==AdminManageUpdateButton){ // Functionality to Update Admin User
+            new Admin().editUser(AdminManageName.getText(),
+                    AdminManageContactNo.getText(),
+                    AdminManagePassword.getText(),
+                    AdminManageSalary.getText(),
+                    AdminManageEmail.getText(),
+                    currentID);
+            getAdmin();
+            clearUserData();
+
+        }else if(event.getSource()==StaffManageUpdateButton){ // Functionality to Update Staff User
+            new Staff().editUser(StaffManageName.getText(),
+                    StaffManageContactNo.getText(),
+                    StaffManagePassword.getText(),
+                    StaffManageSalary.getText(),
+                    StaffManageEmail.getText(),
+                    StaffManagePosition.getText(),
+                    currentID);
+            getStaff();
+            clearUserData();
+
+        }else if(event.getSource()==AdminManageDeleteButton){ // Functionality to delete Admin User
+            new Admin().deleteUser(currentID);
+            getAdmin();
+            clearUserData();
+
+        }else if(event.getSource()==StaffManageDeleteButton){ // Functionality to delete Staff User
+            new Staff().deleteUser(currentID);
+            getStaff();
+            clearUserData();
+
+        }else if(event.getSource()==AdminManageSearchButton){ // Functionality to Search ADMIN User
+            searchAdmin(AdminManageID.getText());
+            clearUserData();
+
+        }else if(event.getSource()==StaffManageSearchButton){ // Functionality to Search Staff User
+            searchStaff(StaffManageID.getText());
+            clearUserData();
+
+        }else if(event.getSource()==AdminManageClearButton||event.getSource()==StaffManageClearButton){ // Functionality to Clear User manage Text fields
+            clearUserData();
+            getAdmin();
+            getStaff();
+
+        }else if (event.getSource()== purchasebtn) {
+
+            purchaseAp.setVisible(true);
+            placePurchasetbl.setVisible(true);
+            placePurchaseAP.setVisible(true);
+            completePurchaseTbl.setVisible(false);
+            completePurchaseAP.setVisible(false);
+
+
+        }
+        else if (event.getSource()== cpbtn) {
+
+            //purchaseAp.setVisible(true);
+            placePurchasetbl.setVisible(false);
+            placePurchaseAP.setVisible(false);
+            completePurchaseTbl.setVisible(true);
+            completePurchaseAP.setVisible(true);
+
+
+        }
+        else if (event.getSource()== ppbtn) {
+
+            //purchaseAp.setVisible(true);
+            placePurchasetbl.setVisible(true);
+            placePurchaseAP.setVisible(true);
+            completePurchaseTbl.setVisible(false);
+            completePurchaseAP.setVisible(false);
+        }
+
+
+    }
   
   
  private AnchorPane RCOManagePanel;
@@ -666,152 +804,7 @@ public class MainAppController implements Initializable {
     private SpinnerValueFactory<Integer> spin;
 
 
-    // This method can help to move through the windows
-          public void controlPanel(ActionEvent event){
-                 if(event.getSource() == emailPage){ // navigate into email page
-                     RCOManagePanel.setVisible(false);
-                     WEB_VIEW.setVisible(true);
-                     RCOPaymentPanel.setVisible(false);
-                     DCOBackground.setVisible(false);
-                     UserManageBackground.setVisible(false);
-                     Email email = new  Email(webView);
-                     email.emailServer();
-                 }else if (event.getSource() == RCO_BTN ) { // navigate into remote customer oder page
-                     RCOManagePanel.setVisible(true);
-                     WEB_VIEW.setVisible(false);
-                     RCOPaymentPanel.setVisible(false);
 
-                     ShowData();
-                     RCOrderID();
-
-
-
-                     DCOBackground.setVisible(false);
-                     UserManageBackground.setVisible(false);
-
-              }else if(event.getSource() ==RCOPaymentBtn){ // navigate into remote customer payment page
-                    // System.out.println("hi");
-                     RCOManagePanel.setVisible(false);
-                     WEB_VIEW.setVisible(false);
-                     RCOPaymentPanel.setVisible(true);
-
-                     PM_PYAMENT_BTN.setDisable(true);
-                     ShowPData();
-
-                     DCOBackground.setVisible(false);
-                     UserManageBackground.setVisible(false);
-                 }else if(event.getSource()==DCOManageButton){ // navigate into Direct customer order page
-                     getMedicine();    //Load stock medicine
-
-
-                     DCOBackground.setVisible(true);
-                     RCOPaymentPanel.setVisible(false);
-                     RCOManagePanel.setVisible(false);
-                     WEB_VIEW.setVisible(false);
-                     UserManageBackground.setVisible(false);
-                     DCOReadIDTextField.requestFocus();
-                 }else if(event.getSource()==UserManageButton){ // navigate into User Manage page
-                     getStaff();
-
-                     DCOBackground.setVisible(false);
-                     RCOPaymentPanel.setVisible(false);
-                     RCOManagePanel.setVisible(false);
-                     WEB_VIEW.setVisible(false);
-                     UserManageBackground.setVisible(true);
-                     StaffManageBackground.setVisible(true);
-                     AdminManageBackground.setVisible(false);
-                 }else if(event.getSource()==UserManageStaffButton){ // navigate into Staff Manage page
-                     getStaff();
-
-                     DCOBackground.setVisible(false);
-                     RCOPaymentPanel.setVisible(false);
-                     RCOManagePanel.setVisible(false);
-                     WEB_VIEW.setVisible(false);
-                     UserManageBackground.setVisible(true);
-                     StaffManageBackground.setVisible(true);
-                     AdminManageBackground.setVisible(false);
-                 }else if(event.getSource()==UserManageAdminButton){ // navigate into Admin Manage page
-                     getAdmin();
-
-                     DCOBackground.setVisible(false);
-                     RCOPaymentPanel.setVisible(false);
-                     RCOManagePanel.setVisible(false);
-                     WEB_VIEW.setVisible(false);
-                     UserManageBackground.setVisible(true);
-                     StaffManageBackground.setVisible(false);
-                     AdminManageBackground.setVisible(true);
-
-                 }else if(event.getSource()==DCOClearButton){ // Functionality to clear DCO
-                     clearData();
-
-                 }else if(event.getSource()==AdminManageAddButton){ // Functionality to Add ADMIN User
-                     new Admin().addUser(AdminManageID.getText(),
-                             AdminManageName.getText(),
-                             AdminManageContactNo.getText(),
-                             AdminManagePassword.getText(),
-                             AdminManageSalary.getText(),
-                             AdminManageEmail.getText());
-                     getAdmin();
-                     clearUserData();
-
-                 }else if(event.getSource()==StaffManageAddButton){ // Functionality to Add Staff User
-                     new Staff().addUser(StaffManageID.getText(),
-                             StaffManageName.getText(),
-                             StaffManageContactNo.getText(),
-                             StaffManagePassword.getText(),
-                             StaffManageSalary.getText(),
-                             StaffManageEmail.getText(),
-                             StaffManagePosition.getText());
-                     getStaff();
-                     clearUserData();
-
-                 }else if(event.getSource()==AdminManageUpdateButton){ // Functionality to Update Admin User
-                     new Admin().editUser(AdminManageName.getText(),
-                             AdminManageContactNo.getText(),
-                             AdminManagePassword.getText(),
-                             AdminManageSalary.getText(),
-                             AdminManageEmail.getText(),
-                             currentID);
-                     getAdmin();
-                     clearUserData();
-
-                 }else if(event.getSource()==StaffManageUpdateButton){ // Functionality to Update Staff User
-                     new Staff().editUser(StaffManageName.getText(),
-                             StaffManageContactNo.getText(),
-                             StaffManagePassword.getText(),
-                             StaffManageSalary.getText(),
-                             StaffManageEmail.getText(),
-                             StaffManagePosition.getText(),
-                             currentID);
-                     getStaff();
-                     clearUserData();
-
-                 }else if(event.getSource()==AdminManageDeleteButton){ // Functionality to delete Admin User
-                     new Admin().deleteUser(currentID);
-                     getAdmin();
-                     clearUserData();
-
-                 }else if(event.getSource()==StaffManageDeleteButton){ // Functionality to delete Staff User
-                     new Staff().deleteUser(currentID);
-                     getStaff();
-                     clearUserData();
-
-                 }else if(event.getSource()==AdminManageSearchButton){ // Functionality to Search ADMIN User
-                     searchAdmin(AdminManageID.getText());
-                     clearUserData();
-
-                 }else if(event.getSource()==StaffManageSearchButton){ // Functionality to Search Staff User
-                     searchStaff(StaffManageID.getText());
-                     clearUserData();
-
-                 }else if(event.getSource()==AdminManageClearButton||event.getSource()==StaffManageClearButton){ // Functionality to Clear User manage Text fields
-                     clearUserData();
-                     getAdmin();
-                     getStaff();
-
-                 }
-
-          }
 
           // get data from rcoshippingdetail table in db.
     public ObservableList<RemoteCustomerOrderMedicineDetails> getData(){
