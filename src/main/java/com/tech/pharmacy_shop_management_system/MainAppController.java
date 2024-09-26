@@ -801,7 +801,7 @@ public class MainAppController implements Initializable {
     private Statement statement;
     private ResultSet result;
 
-    private SpinnerValueFactory<Integer> spin;
+//    private SpinnerValueFactory<Integer> spin;
 
 
 
@@ -1159,28 +1159,6 @@ public class MainAppController implements Initializable {
 
     }
 
-    public void  getMedicine(){
-
-        String sql = "SELECT * FROM medicine WHERE medicineID = '"+RCO_M_ID.getText()+"'";
-
-        connect = DatabaseConnection.ConnectionDB();
-
-        try {
-            prepare = connect.prepareStatement(sql);
-            result = prepare.executeQuery();
-
-            while (result.next()){
-
-                RCO_M_NAME.setText(result.getString("name"));
-                RCO_M_PRICE.setText(result.getString("price"));
-
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
 
     public void  getShippingDetails(){
 
@@ -1535,6 +1513,29 @@ public class MainAppController implements Initializable {
         DCOStockMedicineTable.setItems(DCOListMedicine);
     }
     //Method to load DCO stock medicine details to table ----------------------------------------------------------->End
+
+//    public void  getMedicine(){
+//
+//        String sql = "SELECT * FROM medicine WHERE medicineID = '"+RCO_M_ID.getText()+"'";
+//
+//        connect = DatabaseConnection.ConnectionDB();
+//
+//        try {
+//            prepare = connect.prepareStatement(sql);
+//            result = prepare.executeQuery();
+//
+//            while (result.next()){
+//
+//                RCO_M_NAME.setText(result.getString("name"));
+//                RCO_M_PRICE.setText(result.getString("price"));
+//
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//
+//    }
 
 
 
@@ -2058,7 +2059,7 @@ public class MainAppController implements Initializable {
         RCOrderID();
         RCO_PLACR_ORDER.setDisable(true);
 
-
+    }
 
 //      public void textMethod(){
 //          System.out.println("Hi");
@@ -2121,7 +2122,7 @@ public class MainAppController implements Initializable {
 
     }
 
-    int quantity;
+//    int quantity;
     public void setQnty(){
               spin = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,100,0);
               ppQty.setValueFactory(spin);
@@ -2196,15 +2197,7 @@ public class MainAppController implements Initializable {
     }
 
 
-    //-------------------------------------------------------------------------------------------------------------
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        setQnty();
-
-
-    }
 
 
 
